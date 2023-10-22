@@ -46,7 +46,7 @@ void TD_BME280::begin(void)
 */
 uint8_t TD_BME280::init(void)
 {
-    u_int8_t status;
+    uint8_t status;
     _error_code = 0;
 
     /*!
