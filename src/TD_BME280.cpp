@@ -3,7 +3,7 @@
  * ----------------------------------------------------------------------------
  * @file TD_BME280.cpp
  * @section intro_sec Introduction
- * I2C driver for Bosch BME20 sensor (humidy, temperature and pressure)
+ * I2C driver for Bosch BME20 sensor (humidity, temperature and pressure)
  * @section author Author
  * Written by Esko Honkanen for Technode Design (info@technode.fi) 
  * @section license License
