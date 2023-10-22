@@ -71,7 +71,7 @@
  * ----------------------------------------------------------------------------
  * REGISTERS (See BOSCH BST-BME280-DS001-23):
  * hum_lsb            0xFE
- * hum_msb            0xFD          BME280_REG_HUMIDY       (2ul)
+ * hum_msb            0xFD          BME280_REG_HUMIDITY     (2ul)
  * temp_xlsb          0xFC
  * temp_lsb           0xFB
  * temp_msb           0xFA          BME280_REG_TEMPERATURE  (2ul)
@@ -97,7 +97,7 @@
 */
 #define BME280_ADDRESS          0x77
 
-#define BME280_REG_HUMIDY       0xFD
+#define BME280_REG_HUMIDITY     0xFD
 #define BME280_REG_TEMPERATURE  0xFA
 #define BME280_REG_PRESSURE     0xF7
 #define BME280_REG_CONFIG       0xF5
