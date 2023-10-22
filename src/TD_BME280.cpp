@@ -316,8 +316,8 @@ uint8_t TD_BME280::readHumidity(float *fH)
     int32_t adc_H, v_x1_u32r;
 
     _error_code = NO_ERROR;
-    buffer[0] = readByte(BME280_REG_HUMIDY + 0);
-    buffer[1] = readByte(BME280_REG_HUMIDY + 1);    
+    buffer[0] = readByte(BME280_REG_HUMIDITY + 0);
+    buffer[1] = readByte(BME280_REG_HUMIDITY + 1);    
     adc_H = (uint32_t)((buffer[0] << 8) | buffer[1]);
     #if defined TD_BME280_DEBUG 
     pub_adc_H = adc_H;
