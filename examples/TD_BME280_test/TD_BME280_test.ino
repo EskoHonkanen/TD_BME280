@@ -7,7 +7,7 @@
 * Interface:
 * Sensor         Arduino Uno Board
 * --------------------------------
-* Vin (3.3V       3.3V
+* Vin (3.3V)      3.3V
 * Gnd             Gnd
 * SDA             A4
 * SCK             A5
