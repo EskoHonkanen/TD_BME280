@@ -1,4 +1,4 @@
-/*!
+/**
 * @file TD_BME280_test.ino
 * @brief
 * This simple code show how to use TD_BME280 library to read temperature,
@@ -18,7 +18,7 @@
 
 #include <TD_BME280.h>
 
-/*!
+/**
  * ----------------------------------------------------------------------------
  * Define BME280 and variables.
  * ----------------------------------------------------------------------------
@@ -30,7 +30,7 @@ char str_pressure[8];
 float temperat_o, pressure_o, humidity_o;
 uint8_t retval;
 
-/*!
+/**
  * ----------------------------------------------------------------------------
  * Setup
  * ----------------------------------------------------------------------------
@@ -39,39 +39,39 @@ void setup() {
 	/* Initialize serial and wait for port to open: */
 	Serial.begin(9600);
 	while (!Serial) {
-		; // wait for serial port to connect. Needed for native USB port only
+		; // Wait for serial port. Remove wait if not native USB port.
 	}
   delay(1000);
 
-  /*!
-    * -----------------------------------------------------
-    * BME280 begin.
-    * status = bme.begin(0x76, &Wire)
-    * status = bme.begin(0x77, &Wire)
-    * -----------------------------------------------------
+  /**
+  * -----------------------------------------------------
+  * BME280 begin.
+  * status = bme.begin(0x76, &Wire)
+  * status = bme.begin(0x77, &Wire)
+  * -----------------------------------------------------
   */
   bme.begin();
   if (bme.init() != NO_ERROR) {
-      //digitalWrite(LED_RED, HIGH);
-      Serial.println("bme.init() failed!");
+    //digitalWrite(LED_RED, HIGH);
+    Serial.println("bme.init() failed!");
   } 	
 
-  /*!
-    * -----------------------------------------------------
-    * Set BME280 into Forced Mode.
-    * -----------------------------------------------------
+  /**
+  * -----------------------------------------------------
+  * Set BME280 into Forced Mode.
+  * -----------------------------------------------------
   */
   bme.setSampling(
-      MODE_FORCED,
-      OSR_X1,         // Temperature
-      OSR_X1,         // Pressure
-      OSR_X1,         // Humidity
-      FILTER_OFF);
+    MODE_FORCED,
+    OSR_X1,         // Temperature
+    OSR_X1,         // Pressure
+    OSR_X1,         // Humidity
+    FILTER_OFF);
   delay(100); 
 
 }
 
-/*!
+/**
  * ----------------------------------------------------------------------------
  * Main loop.
  * ----------------------------------------------------------------------------
@@ -102,23 +102,23 @@ void loop() {
   delay(10000); /* Wait */
 }
 
-/*!
+/**
  * ----------------------------------------------------------------------------
- * Measure temperature, humidity and pressure using BME280.
- * /param no
- * /return error code
+ * Measure temperature, humidity and pressure from BME280.
+ * @param no
+ * @return error code
  * ----------------------------------------------------------------------------
 */
 uint8_t measureValues() 
 {
-    uint8_t ret_val;
-    ret_val = NO_ERROR;
+  uint8_t ret_val;
+  ret_val = NO_ERROR;
 
-    ret_val = bme.startForced();
-    ret_val |= bme.readTemperature(&temperat_o);
-    ret_val |= bme.readHumidity(&humidity_o);
-    ret_val |= bme.readPressure(&pressure_o);
-    pressure_o = pressure_o / 100.0F; 
+  ret_val = bme.startForced();
+  ret_val |= bme.readTemperature(&temperat_o);
+  ret_val |= bme.readHumidity(&humidity_o);
+  ret_val |= bme.readPressure(&pressure_o);
+  pressure_o = pressure_o / 100.0F; 
 
-    return ret_val;
+  return ret_val;
 }
