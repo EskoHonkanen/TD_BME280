@@ -47,7 +47,7 @@ void TD_BME280::begin(void)
 /**
  * ----------------------------------------------------------------------------
  * @brief Function uint8_t init()
- * Initilaze sensor
+ * Initialize sensor
  * ----------------------------------------------------------------------------
 */
 uint8_t TD_BME280::init(void)
