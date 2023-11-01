@@ -1,19 +1,23 @@
 
-/*!
+/**
  * ----------------------------------------------------------------------------
  * @file TD_BME280.h
- * I2C driver for Bosch BME20 sensor (humidity, temperature and pressure).
- * Written by Esko Honkanen for Technode Design (info@technode.fi).
+ * @brief Arduino I2C library for Bosch BME20 sensor (humidity, temperature and pressure).
+ * @details Written by Honee52 for Technode Design (info@technode.fi).
  * You may use this library as it is or change it without limitations. 
  * Beerware license.
- * @brief 'Simple is beatiful'
+ * @version 1.0.1
+ * @note 'Simple is beatiful'
+ * Version history:
+ * Version 1.0.0    Initial version
+ * Version 1.0.1    Modified code documentation
  * ----------------------------------------------------------------------------
  */
 
 #ifndef TD_BME280_H
 #define TD_BME280_H
 
-//#define TD_BME280_DEBUG
+#define TD_BME280_VERSION "1.0.1"
 
 #if defined(ARDUINO) && ARDUINO >= 100
 #include "Wire.h"
@@ -27,11 +31,9 @@
 #define U_BE 3
 #define S_BE 4
 
-/*!
- * ----------------------------------------------------------------------------
- * Defines
- * See BOSCH BST-BME280-DS001-23
- * ----------------------------------------------------------------------------
+/**
+ * @brief Sensor BME280 defines.
+ * @details See BOSCH BST-BME280-DS001-23.
 */
 #define SOFT_RESET    0xB6
 #define IM_UPDATE     0x01
@@ -67,7 +69,7 @@
 #define TSB_10        0x06
 #define TSB_20        0x07
 
-/*!
+/** @note
  * ----------------------------------------------------------------------------
  * REGISTERS (See BOSCH BST-BME280-DS001-23):
  * hum_lsb            0xFE
@@ -89,11 +91,9 @@
  * ----------------------------------------------------------------------------
 */
 
-/*!
- * ----------------------------------------------------------------------------
- * Register defines
- * See BOSCH BST-BME280-DS001-23
- * ----------------------------------------------------------------------------
+/**
+ * @brief Register defines.
+ * @details See BOSCH BST-BME280-DS001-23.
 */
 #define BME280_ADDRESS          0x77
 
@@ -131,10 +131,8 @@
 #define BME280_REG_DIG_H5_H     0xE6
 #define BME280_REG_DIG_H6       0xE7
 
-/*!
- * ----------------------------------------------------------------------------
- * Error codes
- * ----------------------------------------------------------------------------
+/**
+ * @brief Error codes & error masks. 
 */
 #define NO_ERROR                 0b00000000
 #define ERROR_TRANSMISSION_LEN   0b00000001
@@ -144,69 +142,58 @@
 #define ERROR_WRONG_SENSOR_ID    0b00010000
 #define ERROR_FM_TIMEOUT         0b00100000
 
-/*!
- * ----------------------------------------------------------------------------
- * class TD_BME280
- * ----------------------------------------------------------------------------
+/**
+ * @class TD_BME280.
+ * @brief TD_BME280 Class definition.
 */
 class TD_BME280
 {
-  public:
-    /*!
-     * \brief Initialize TD_BME280 instance
-     * \param I2C address of the BME280 device
-     */
+    public:
+    /**
+    * @brief Initialize TD_BME280 instance.
+    * @param I2C address of the BME280 device.
+    */
     TD_BME280(uint8_t i2c_device_address);
-    ~TD_BME280();
 
-    /*!
-     * ----------------------------------------------------
-     * \brief Begin
-     * ----------------------------------------------------
+    /* Default destructor is used. */
+
+    /**
+    * @brief Function begin.
+    * @return void
     */
     void begin(void);
 
-    /*!
-     * ----------------------------------------------------
-     * \brief Initialize BME280
-     * \return function result (uint8_t)
-     * ----------------------------------------------------
-     */
+    /**
+    * @brief Initialize BME280.
+    * @return function result (uint8_t)
+    */
     uint8_t init(void); 
 
-    /*!
-     * ----------------------------------------------------
-     * \brief Read tempeature from BME280
-     * \return data out (float *fT)
-     * \return function result (uint8_t)
-     * ----------------------------------------------------
-     */
+    /**
+    * @brief Read tempeature from BME280.
+    * @param *fT [out] float *tempeature
+    * @return function result (uint8_t)
+    */
     uint8_t readTemperature(float *fT);
 
-    /*!
-     * ----------------------------------------------------
-     * \brief Read pressure from BME280
-     * \return data out (float *fP)
-     * \return function result (uint8_t)
-     * ----------------------------------------------------
-     */
+    /**
+    * @brief Read pressure from BME280.
+    * @param *fP [out] float *pressure
+    * @return function result (uint8_t)
+    */
     uint8_t readPressure(float *fP);
 
-    /*!
-     * ----------------------------------------------------
-     * \brief Read humidity from BME280
-     * \return data out (float *fH)
-     * \return function result (uint8_t)
-     * ----------------------------------------------------
-     */
+    /**
+    * @brief Read humidity from BME280.
+    * @param *fH [out] float *humidity
+    * @return function result (uint8_t)
+    */
     uint8_t readHumidity(float *fH); 
 
-    /*!
-     * ----------------------------------------------------
-     * \brief Set sampling paramaters. Default values are
-     * shown below.
-     * ----------------------------------------------------
-     */
+    /**
+    * @brief Set sampling paramaters.
+    * @return void
+    */
     void setSampling(
         uint8_t mode            = MODE_NORMAL,
         uint8_t tempSampling    = OSR_X16,
@@ -216,86 +203,52 @@ class TD_BME280
         uint8_t duration        = TSB_0_5
     );
 
-    /*!
-     * ----------------------------------------------------
-     * \brief Start forced mode measurement
-     * \return Function result (uint8_t)
-     * ----------------------------------------------------
-     */
+    /**
+    * @brief Start forced mode measurement
+    * @return function result (uint8_t)
+    */
     uint8_t startForced(void);  
 
-    /*!
-     * ----------------------------------------------------
-     * \brief Get temperature compensation value.
-     * \return Current compensation value in C°.
-     * ----------------------------------------------------
-     */
+    /**
+    * @brief Get temperature compensation value.
+    * @return Current compensation value in C°.
+    */
     float getTCompensation(void);
 
-    /*!
-     * ----------------------------------------------------
-     * \brief Set temperature compensation value.
-     * \param fine_tune compensation value in C°.
-     * ----------------------------------------------------
-     */
+    /**
+    * @brief Set temperature compensation value.
+    * @param fine_tune compensation value in C°.
+    * @return void
+    */
     void setTCompensation(float t_fine_tune);
 
-    #if defined TD_BME280_DEBUG
-    /* Debug variables */
-    uint16_t pub_cal_T1;
-    uint16_t pub_cal_T2;
-    uint16_t pub_cal_T3;
-
-    uint16_t pub_cal_P1;
-    uint16_t pub_cal_P2;
-    uint16_t pub_cal_P3;
-    uint16_t pub_cal_P4;
-    uint16_t pub_cal_P5;
-    uint16_t pub_cal_P6;
-    uint16_t pub_cal_P7;
-    uint16_t pub_cal_P8;
-    uint16_t pub_cal_P9;
-
-    uint16_t pub_cal_H1;
-    uint16_t pub_cal_H2;
-    uint16_t pub_cal_H3;
-    uint16_t pub_cal_H4;
-    uint16_t pub_cal_H5;
-    uint16_t pub_cal_H6;
-
-    int32_t pub_adc_T;  
-    int32_t pub_adc_H;
-    int32_t pub_adc_P; 
-    #endif
-
-  private:
-    /*!
-     * ----------------------------------------------------
-     * \brief Read one byte from BME280 register
-     * \param register_address
-     * \return data (uint8_t)
-     * ----------------------------------------------------
+    private:
+    /**
+    * @brief Read one byte from BME280 register
+    * @param register_address
+    * @return data (uint8_t)
     */
     uint8_t readByte(uint8_t register_address);
 
-    /*!
-     * ----------------------------------------------------
-     * \brief Read two bytes (word) from BME280 registers
-     * \param register_address, u8Sign
-     * \return data (uint16_t)
-     * ----------------------------------------------------
+    /**
+    * @brief Read two bytes (word) from BME280 registers
+    * @param register_address 
+    * @param u8Sign
+    * @return data (uint16_t)
     */
     uint16_t readWord(uint8_t register_address, uint8_t u8Sign);
 
-    /*!
-     * ----------------------------------------------------
-     * \brief Write one byte to BME280 register
-     * \param register_address 
-     * \param data (byte)
-     * ----------------------------------------------------
-     */
+    /**
+    * @brief Write one byte to BME280 register
+    * @param register_address 
+    * @param data (byte)
+    * @return void
+    */
     void writeByte(uint8_t register_address, uint8_t data);
 
+    /**
+     * @brief Private variables. 
+    */
     uint8_t _i2c_device_address;
     uint16_t _cal_T1;
     uint16_t _cal_T2;
@@ -319,7 +272,7 @@ class TD_BME280
     int8_t   _cal_H6;
     //
     uint8_t _sensorID;
-    uint8_t _error_code;
+    int _error_code;
     int32_t t_fine;
     int32_t t_adjust = 0;
 };

@@ -1,37 +1,42 @@
 
-/*!
+/**
  * ----------------------------------------------------------------------------
  * @file TD_BME280.cpp
- * @section intro_sec Introduction
- * I2C driver for Bosch BME20 sensor (humidity, temperature and pressure)
- * @section author Author
- * Written by Esko Honkanen for Technode Design (info@technode.fi) 
- * @section license License
+ * @brief Arduino I2C library for Bosch BME20 sensor (humidity, temperature and pressure).
+ * @details Written by Honee52 for Technode Design (info@technode.fi).
+ * You may use this library as it is or change it without limitations. 
  * Beerware license.
- * @brief 'Simple is beatiful'
+ * @version 1.0.1
+ * @note 'Simple is beatiful'
+ * Version history:
+ * Version 1.0.0    Initial version
+ * Version 1.0.1    Modified code documentation
  * ----------------------------------------------------------------------------
  */
 
 #include "Wire.h"
 #include "TD_BME280.h"
 
-/*!
+/**
  * ----------------------------------------------------------------------------
- * Defines
+ * @brief Defines
  * ----------------------------------------------------------------------------
 */
 #define I2C Wire
 
+/**
+ * ----------------------------------------------------------------------------
+ * @brief Initialize TD_BME280 instance.
+ * ----------------------------------------------------------------------------
+*/
 TD_BME280::TD_BME280(uint8_t i2c_device_address)
 {
     _i2c_device_address = i2c_device_address;
 }
 
-TD_BME280::~TD_BME280() {}
-
-/*!
+/**
  * ----------------------------------------------------------------------------
- * Function begin()
+ * @brief Function void begin()
  * ----------------------------------------------------------------------------
 */
 void TD_BME280::begin(void)
@@ -39,9 +44,10 @@ void TD_BME280::begin(void)
      I2C.begin();
 }
 
-/*!
+/**
  * ----------------------------------------------------------------------------
- * Initilaze.
+ * @brief Function uint8_t init()
+ * Initilaze sensor
  * ----------------------------------------------------------------------------
 */
 uint8_t TD_BME280::init(void)
@@ -49,9 +55,9 @@ uint8_t TD_BME280::init(void)
     uint8_t status;
     _error_code = 0;
 
-    /*!
+    /**
      * ----------------------------------------------------
-     * Check if chip ID is correct.
+     * @brief Check if chip ID is correct.
      * ----------------------------------------------------
     */
     _sensorID = readByte(BME280_REG_ID);
@@ -60,17 +66,17 @@ uint8_t TD_BME280::init(void)
         return _error_code | ERROR_WRONG_SENSOR_ID;
     }
 
-    /*!
+    /**
      * ----------------------------------------------------
-     * Execute device soft-reset.
+     * @brief Execute device soft-reset.
      * ----------------------------------------------------
     */
     writeByte(BME280_REG_RESET, SOFT_RESET); 
     delay(20);
 
-    /*!
+    /**
      * ----------------------------------------------------
-     * Check if calibration is still active.
+     * @brief Check if calibration is still active.
      * ----------------------------------------------------
     */
     status = 1;
@@ -83,9 +89,9 @@ uint8_t TD_BME280::init(void)
         delay(10);
     }
 
-    /*!
+    /**
      * ----------------------------------------------------
-     * Read calibration data.
+     * @brief Read calibration data.
      * See BOSCH BST-BME280-DS001-23
      *  ---------------------------------------------------
      * Big-Endian (BE) / Little-Endian (LE) of 0x1234:
@@ -99,12 +105,6 @@ uint8_t TD_BME280::init(void)
     _cal_T2 = readWord(BME280_REG_DIG_T2, S_LE);
     _cal_T3 = readWord(BME280_REG_DIG_T3, S_LE);
 
-    #if defined TD_BME280_DEBUG
-    pub_cal_T1 = _cal_T1;
-    pub_cal_T2 = _cal_T2;
-    pub_cal_T3 = _cal_T3;    
-    #endif
-
     /* Pressure */
     _cal_P1 = readWord(BME280_REG_DIG_P1, U_LE);
     _cal_P2 = readWord(BME280_REG_DIG_P2, S_LE);
@@ -116,18 +116,6 @@ uint8_t TD_BME280::init(void)
     _cal_P8 = readWord(BME280_REG_DIG_P8, S_LE);
     _cal_P9 = readWord(BME280_REG_DIG_P9, S_LE);
 
-    #if defined TD_BME280_DEBUG
-    pub_cal_P1 = _cal_P1;
-    pub_cal_P2 = _cal_P2;
-    pub_cal_P3 = _cal_P3;
-    pub_cal_P4 = _cal_P4;
-    pub_cal_P5 = _cal_P5;
-    pub_cal_P6 = _cal_P6;
-    pub_cal_P7 = _cal_P7;
-    pub_cal_P8 = _cal_P8;
-    pub_cal_P9 = _cal_P9;
-    #endif
-
     /* Humidity */
     _cal_H1 = readByte(BME280_REG_DIG_H1);
     _cal_H2 = readByte(BME280_REG_DIG_H2_L) | (readByte(BME280_REG_DIG_H2_H) << 8);
@@ -136,19 +124,9 @@ uint8_t TD_BME280::init(void)
     _cal_H5 = ((readByte(BME280_REG_DIG_H5_L) & 0xF0) >> 4) | (readByte(BME280_REG_DIG_H5_H) << 4); 
     _cal_H6 = readByte(BME280_REG_DIG_H6);
 
-    #if defined TD_BME280_DEBUG
-    pub_cal_H1 = _cal_H1;
-    pub_cal_H2 = _cal_H2;
-    pub_cal_H3 = _cal_H3;
-    pub_cal_H4 = _cal_H4;
-    pub_cal_H5 = _cal_H5;
-    pub_cal_H6 = _cal_H6;
-    #endif
-
-
-    /*!
+    /**
      * ----------------------------------------------------
-     * Set sampling.
+     * @brief Set sampling.
      * ----------------------------------------------------
     */ 
     void setSampling();      
@@ -156,9 +134,9 @@ uint8_t TD_BME280::init(void)
     return _error_code;
 }
 
-/*!
+/**
  * ----------------------------------------------------------------------------
- * Function readByte
+ * @brief Function uint8_t readByte(uint8_t register_address)
  * ----------------------------------------------------------------------------
 */
 uint8_t TD_BME280::readByte(uint8_t register_address)
@@ -182,9 +160,9 @@ uint8_t TD_BME280::readByte(uint8_t register_address)
     return I2C.read();
 }
 
-/*!
+/**
  * ----------------------------------------------------------------------------
- * Function readWord
+ * @brief Function uint16_t readWord(uint8_t register_address, uint8_t u8Sign)
  * ----------------------------------------------------------------------------
 */
 uint16_t TD_BME280::readWord(uint8_t register_address, uint8_t u8Sign)
@@ -211,9 +189,9 @@ uint16_t TD_BME280::readWord(uint8_t register_address, uint8_t u8Sign)
     }   
 }
 
-/*!
+/**
  * ----------------------------------------------------------------------------
- * Function writeByte
+ * @brief Function void writeByte(uint8_t register_address, uint8_t data)
  * ----------------------------------------------------------------------------
 */
 void TD_BME280::writeByte(uint8_t register_address, uint8_t data)
@@ -226,15 +204,15 @@ void TD_BME280::writeByte(uint8_t register_address, uint8_t data)
     {
         _error_code |= ERROR_WRITE_LEN;
     }
-    if (I2C.endTransmission())
+    if (I2C.endTransmission() != 0)
     {
         _error_code |= ERROR_END_TRANSMISSION;
     }    
 }
 
-/*!
+/**
  * ----------------------------------------------------------------------------
- * Function readTemperature
+ * @brief Function uint8_t readTemperature(float *fT)
  * ----------------------------------------------------------------------------
 */
 uint8_t TD_BME280::readTemperature(float *fT)
@@ -247,10 +225,7 @@ uint8_t TD_BME280::readTemperature(float *fT)
     buffer[1] = readByte(BME280_REG_TEMPERATURE + 1);
     buffer[2] = readByte(BME280_REG_TEMPERATURE + 2);
     adc_T = ((int32_t)(buffer[0]) << 16) | ((int32_t)(buffer[1]) << 8) | (int32_t)buffer[2];
-    adc_T = (adc_T >> 4); 
-    #if defined TD_BME280_DEBUG
-    pub_adc_T = adc_T;
-    #endif
+    adc_T = (adc_T >> 4);
     
     /* Calibration, see BOSCH BST-BME280-DS001-23 */
     var1  = ((((adc_T >> 3) - ((int32_t)_cal_T1<<1))) * ((int32_t)_cal_T2)) >> 11; 
@@ -261,9 +236,9 @@ uint8_t TD_BME280::readTemperature(float *fT)
     return _error_code;
 }
 
-/*!
+/**
  * ----------------------------------------------------------------------------
- * Function readPressure
+ * @brief Function uint8_t readPressure(float *fP)
  * ----------------------------------------------------------------------------
 */
 uint8_t TD_BME280::readPressure(float *fP)
@@ -278,9 +253,6 @@ uint8_t TD_BME280::readPressure(float *fP)
     buffer[2] = readByte(BME280_REG_PRESSURE + 2);    
     adc_P = ((int32_t)(buffer[0]) << 16) | ((int32_t)(buffer[1]) << 8) | (int32_t)buffer[2];
     adc_P = adc_P >> 4;
-    #if defined TD_BME280_DEBUG
-    pub_adc_P = adc_P;
-    #endif
  
     /* Calibration, see BOSCH BST-BME280-DS001-23 */
     var1 = ((int64_t)t_fine) - 128000; 
@@ -303,25 +275,21 @@ uint8_t TD_BME280::readPressure(float *fP)
     return _error_code;
 }
 
-/*!
+/**
  * ----------------------------------------------------------------------------
- * Function readHumidity
+ * @brief Function uint8_t readHumidity(float *fH)
  * ----------------------------------------------------------------------------
 */
 uint8_t TD_BME280::readHumidity(float *fH)
 {
     byte buffer[2];
-    float read_data = 0;
     uint32_t H;
     int32_t adc_H, v_x1_u32r;
 
     _error_code = NO_ERROR;
     buffer[0] = readByte(BME280_REG_HUMIDITY + 0);
     buffer[1] = readByte(BME280_REG_HUMIDITY + 1);    
-    adc_H = (uint32_t)((buffer[0] << 8) | buffer[1]);
-    #if defined TD_BME280_DEBUG 
-    pub_adc_H = adc_H;
-    #endif   
+    adc_H = (uint32_t)((buffer[0] << 8) | buffer[1]);   
     
     /* Calibration, see BOSCH BST-BME280-DS001-23 */
     v_x1_u32r = (t_fine - ((int32_t)76800)); 
@@ -340,9 +308,9 @@ uint8_t TD_BME280::readHumidity(float *fH)
     return _error_code;
 }
 
-/*!
+/**
  * ----------------------------------------------------------------------------
- * Function setSampling
+ * @brief Function void setSampling(..)
  * ----------------------------------------------------------------------------
 */
 void TD_BME280::setSampling(
@@ -365,8 +333,9 @@ void TD_BME280::setSampling(
     writeByte(BME280_REG_CTRL_MEAS, ctrl_meas);
 }
 
-/*!
+/**
  * ----------------------------------------------------------------------------
+ * @brief Function uint8_t startForced(void)
  * Start forced measuremet.
  * ----------------------------------------------------------------------------
 */
@@ -390,9 +359,10 @@ uint8_t TD_BME280::startForced(void)
     return _error_code | ret_val;
 }
 
-/*!
+/**
  * ----------------------------------------------------------------------------
- *  Get temperature compensation value in C°.
+ * @brief Function float getTCompensation(void)
+ * @note Get temperature compensation value in C°.
  * ----------------------------------------------------------------------------
  */
 float TD_BME280::getTCompensation(void) 
@@ -400,9 +370,10 @@ float TD_BME280::getTCompensation(void)
     return float((t_adjust * 5) >> 8) / 100.0;
 }
 
-/*!
+/**
  * ----------------------------------------------------------------------------
- * Set temperature compensation value in C°.
+ * @brief Function void setTCompensation(float t_fine_tune)
+ * @note Set temperature compensation value in C°.
  * ----------------------------------------------------------------------------
  */
 void TD_BME280::setTCompensation(float t_fine_tune) 
