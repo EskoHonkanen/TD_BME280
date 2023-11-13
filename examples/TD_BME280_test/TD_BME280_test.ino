@@ -36,11 +36,11 @@ uint8_t retval;
  * ----------------------------------------------------------------------------
 */
 void setup() {
-	/* Initialize serial and wait for port to open: */
-	Serial.begin(9600);
-	while (!Serial) {
-		; // Wait for serial port. Remove wait if not native USB port.
-	}
+  /* Initialize serial and wait for port to open: */
+  Serial.begin(9600);
+  while (!Serial) {
+    ; // Wait for serial port. Remove wait if not native USB port.
+  }
   delay(1000);
 
   /**
